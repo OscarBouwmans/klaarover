@@ -1,8 +1,10 @@
 # Klaarover
 
+Signal-based reactive JavaScript UI framework that should not be used.
+
 ## What is this?
 
-This framework was built in a few days as a mental exercise and an in-depth study of the Signal concept. It should be noted that this occurred during the sleepless days caused by a newborn baby. Besides that, this project is based on the TC39 proposal polyfill version 0.1.1, so this will likely be incompatible in the future. Oh yeah, this framework probably contains bugs and lacks many features. Did I mention I have not written any tests?
+This framework was built in a few days as a mental exercise and an in-depth study of the Signal concept. It should be noted that this occurred during the sleepless days caused by a newborn baby. Besides that, this project is based on the [TC39 proposal polyfill](https://github.com/proposal-signals/signal-polyfill) version 0.1.1, so this will likely be incompatible in the future. Oh yeah, this framework probably contains bugs and lacks many features. Did I mention I have not written any tests?
 
 I would therefore discourage anyone to use this framework for purposes other than those for which it was created. I look back very positively on creating this small framework, and would encourage any frontend developer to also build their own experimental framework based on Signals (and then not use it). This repository and package perhaps could be a good inspiration of how (not) to do it.
 
@@ -11,7 +13,8 @@ I would therefore discourage anyone to use this framework for purposes other tha
 With modern JavaScript frameworks moving towards Signal-based reactivity (Angular, Svelte, Vue †), and with Signals being seriously proposed as an addition to the language, I felt the need to thoroughly understand what Signals are and how they work. Besides that, I thought it would be interesting to have my own minimal JavaScript component-based framework to use on small side projects or in prototypes. A framework that requires no build step and allows for quick development ††.
 
 _† in alphabetical order and definitely not exhaustive_
-_†† I have since realised that Vue is probably already a great fit for this_
+
+_†† I have since remembered that Vue meets these requirements_
 
 ## Installation
 
@@ -23,7 +26,7 @@ _†† I have since realised that Vue is probably already a great fit for this_
 
 Place the following script in your HTML `head` before any other script tags.
 
-```
+```HTML
 <script type="importmap">
   {
     "imports": {
@@ -37,7 +40,7 @@ Place the following script in your HTML `head` before any other script tags.
 
 ### Hello world
 
-```
+```HTML
 <div id="app"></div>
 
 <script type="module">
@@ -54,7 +57,7 @@ Everybody is doing boring counter examples for signals, so here goes.
 
 Use the `$textContent` binding key to render static or dynamic text content within an element.
 
-```
+```HTML
 <!-- index.html -->
 <html>
   <head>
@@ -73,7 +76,7 @@ Use the `$textContent` binding key to render static or dynamic text content with
 </html>
 ```
 
-```
+```JavaScript
 /* App.component.js */
 import { component, $textContent } from 'klaarover';
 import { Signal } from 'signal-polyfill';
@@ -121,7 +124,7 @@ export default component(`
 
 Use the `$child` binding key to render child components within template elements.
 
-```
+```JavaScript
 /* Parent.component.js */
 import { component, $child } from 'klaarover';
 import Navigation from './Navigation.component';
@@ -152,24 +155,63 @@ export default component(`
 
 Props can be passed to components when initializing them. Props are an object, and their type can be specified when using TypeScript (or JSDoc).
 
-```
-/* UserList.component.ts */
+```TypeScript
+// UserList.component.ts
+
+import { component, $children } from 'klaarover';
 import User from './User.component';
 
-/* User.component.ts */
-export default component<{ firstName: string, email: string }>(`
-  Hello <span class="name"></span>, I will send an email to <span class="email"></span>.
-`, ({ firstName, email }) => {
+export default UserList = component(`
+  <table>
+    <thead>
+      <tr>
+        <th>First name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+`, () => ({
+  bindings: {
+    'tbody': {
+      [$children]: [
+        User({ firstName: 'John', email: 'John@example.com' }),
+        User({ firstName: 'Jane', email: 'Jane@example.com' }),
+      ]
+    }
+  }
+}));
+```
 
-})
+```TypeScript
+// User.component.ts
+
+import { component, $textContent } from 'klaarover';
+
+export default component<{ firstName: string, email: string }>(`
+  <tr>
+    <td class="name"></td>
+    <td class="email"></td>
+  </tr>
+`, ({ firstName, email }) => ({
+  bindings: {
+    '.name': {
+      [$textContent]: firstName
+    },
+    '.email': {
+      [$textContent]: email
+    }
+  }
+}))
 ```
 
 ### Conditional rendering
 
 Use Signals, in combination with the `$child` binding key to render children conditionally.
 
-```
-/* Conditionals.component.js */
+```JavaScript
+// Conditionals.component.js
+
 import { component, $child } from 'klaarover';
 import { Signal } from 'signal-polyfill';
 import Secrets from './Secrets.component';
@@ -207,8 +249,9 @@ export default component(`
 
 ### Component lifecycle
 
-```
-/* Lifecycle.component.js */
+```JavaScript
+// Lifecycle.component.js
+
 import { component, $textContent } from 'klaarover';
 import { Signal } from 'signal-polyfill';
 
@@ -252,8 +295,9 @@ Components are initialized synchronously. After that, schedulers can be used to 
 
 Component logic can be eagerly imported either statically or dynamically, as shown in _Nesting components_ above. The utility component `Lazy` can be used for lazy loading.
 
-```
-/* Container.component.js */
+```JavaScript
+// Container.component.js
+
 import { Lazy, delay, trigger, idleTime } from 'klaarover/lib/components';
 
 export default component(`
