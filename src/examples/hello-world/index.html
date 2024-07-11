@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <meta charset="utf8" />
+    <title>Klaarover – Hello World</title>
+    <style>
+      #app {
+        display: contents;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import { component, render } from '../..';
+
+      const HelloWorld = component('Hello world!');
+      console.log(HelloWorld().fragment, 'hi');
+
+      render(app, HelloWorld());
+    </script>
+  </body>
+</html>

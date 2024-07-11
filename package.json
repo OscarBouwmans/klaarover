@@ -1,0 +1,22 @@
+{
+  "name": "klaarover",
+  "private": false,
+  "version": "0.1.0",
+  "description": "Modern, Signal-based reactive JavaScript UI framework that should not be used.",
+  "main": "lib/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc",
+    "preview": "vite preview",
+    "prepare": "npm run build"
+  },
+  "keywords": ["framework", "signals", "reactivity", "sleep deprivation"],
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.3.1"
+  },
+  "dependencies": {
+    "signal-polyfill": "0.1.1"
+  }
+}

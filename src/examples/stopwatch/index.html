@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <meta charset="utf8" />
+    <title>Klaarover – Stopwatch</title>
+    <style>
+      #app {
+        display: contents;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Klaarover – Stopwatch</h1>
+    <main id="app"></main>
+
+    <template id="stopwatch">
+      <p id="time"></p>
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+      <button id="reset">Reset</button>
+    </template>
+
+    <script type="module">
+      import { component, render } from '../..';
+      import { Stopwatch } from './Stopwatch.component';
+
+      render(app, Stopwatch());
+    </script>
+  </body>
+</html>
