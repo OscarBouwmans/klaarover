@@ -1,9 +1,12 @@
 {
   "name": "klaarover",
   "private": false,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Modern, Signal-based reactive JavaScript UI framework that should not be used.",
   "main": "lib/index.js",
+  "files": [
+    "lib/**/*"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
