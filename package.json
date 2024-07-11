@@ -12,6 +12,12 @@
     "prepare": "npm run build"
   },
   "keywords": ["framework", "signals", "reactivity", "sleep deprivation"],
+  "author": "Oscar Bouwmans",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OscarBouwmans/klaarover/issues"
+  },
+  "homepage": "https://github.com/OscarBouwmans/klaarover#readme",
   "devDependencies": {
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
