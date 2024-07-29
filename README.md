@@ -2,9 +2,13 @@
 
 Signal-based reactive JavaScript UI framework that should not be used.
 
+## Playground
+
+Try it out on [StackBlitz](https://stackblitz.com/edit/klaarover).
+
 ## What is this?
 
-This framework was built in a few days as a mental exercise and an in-depth study of the Signal concept. It should be noted that this occurred during the sleepless days caused by a newborn baby. Besides that, this project is based on the [TC39 proposal polyfill](https://github.com/proposal-signals/signal-polyfill) version 0.1.1, so this will likely be incompatible in the future. Oh yeah, this framework probably contains bugs and lacks many features. Did I mention I have not written any tests?
+This framework was built in a few days as a mental exercise and an in-depth study of the Signal concept. It should be noted that this occurred during sleepless days and nights caused by a newborn baby. Besides that, this project is based on the [TC39 proposal polyfill](https://github.com/proposal-signals/signal-polyfill) version 0.1.1, so this will likely be incompatible in the future. Oh yeah, this framework probably contains bugs and lacks many features. Did I mention I have not written any tests?
 
 I would therefore discourage anyone to use this framework for purposes other than those for which it was created. I look back very positively on creating this small framework, and would encourage any frontend developer to also build their own experimental framework based on Signals (and then not use it). This repository and package perhaps could be a good inspiration of how (not) to do it.
 
