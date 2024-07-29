@@ -17,15 +17,19 @@ export function createEffect(
         let isPending = false;
 
         const watcher = new Signal.subtle.Watcher(() => {
-        if (!isPending) {
+            if (isPending) {
+                return;
+            }
             isPending = true;
             scheduler.enqueue(() => {
                 if (lifecycle.aborted) return;
                 isPending = false;
+                if (typeof cleanup === 'function') {
+                    cleanup();
+                }
                 cleanup = reader.get();
                 watcher.watch(reader);
             });
-        }
         });
 
         cleanup = reader.get();

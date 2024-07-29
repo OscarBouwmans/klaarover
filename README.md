@@ -306,13 +306,13 @@ Many side effects can be handled using `mounted`, `cleanup`, and the `lifecycle`
 ```JavaScript
 // Effects.component.js
 
-import { component, $state, $computed, $effect } from 'klaarover';
+import { component, $state, $computed, $textContent } from 'klaarover';
 
 export default component(`
   <h1>Effects</h1>
   <p></p>
   <button>Increment</button>
-`, () => {
+`, (_, { $effect }) => {
   const counter = $state(0);
 
   $effect(() => {
