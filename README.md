@@ -259,21 +259,28 @@ export default component(`
   <h1>Lifecycle</h1>
   <p>Initialized: <time class="init"></time></p>
   <p>Mounted: <time class="mounted"></time></p>
-`, () => {
+`, (props, { lifecycle }) => {
   console.log('Component instance initialization.');
 
   const initDate = new Signal.State(new Date());
   const mountedDate = new Signal.State(null);
 
+  document.addEventListener('keydown', (event) => {
+    // Act upon 'global' event
+  }, {
+    // Cleanup event listener when component is destroyed:
+    signal: lifecycle
+  });
+
   return {
     bindings: {
       "time.init": {
-        datetime: new Signal.Computed(() => initDate.get().toISOString())
-        [$textContent]: new Signal.Computed(() => initDate.get().toLocaleString())
+        datetime: toIsoString(initDate),
+        [$textContent]: toLocaleString(initDate)
       },
       "time.mounted": {
-        datetime: new Signal.Computed(() => mountedDate.get()?.toISOString())
-        [$textContent]: new Signal.Computed(() => mountedDate.get()?.toLocaleString())
+        datetime: toIsoString(mountedDate),
+        [$textContent]: toLocaleString(mountedDate)
       }
     },
     mounted() {
@@ -284,20 +291,77 @@ export default component(`
       console.log('This component instance is now removed from the DOM and will never be used again.');
     }
   }
-})
+});
+
+function toIsoString(date) {
+  return new Signal.Computed(() => date.get().toISOString());
+}
+
+function toLocaleString(date) {
+  return new Signal.Computed(() => date.get().toLocaleString());
+}
 ```
 
 ### Schedulers
 
-Components are initialized synchronously. After that, schedulers can be used to defer DOM updates caused by Signal updates. For example, the `idleCallback` scheduler defers updates using `requestIdleCallback`, and the `throttleScheduler` acts like a rate limiter by throttling updates per a provided amount of milliseconds.
+Components are initialized synchronously. After that, schedulers can be used to defer DOM updates caused by Signal updates. Available schedulers are:
+- `microtask` (default)
+- `animationFrame` – limits updates to the display's frame rate
+- `idleCallback` – limits updates to when the browser is idle
+- `throttleScheduler` – limits updates to a specified interval
+
+The following example shows a component that increments a counter every 2 milliseconds. The component is instantiated using the `animationFrame` scheduler, so that the DOM is updated at the display's frame rate. The number will still increment ~500 per second, regardless of frame rate.
+
+```JavaScript
+import { component, $child, $textContent } from 'klaarover';
+import { animationFrame } from 'klaarover/lib/schedulers';
+
+export default component(`
+  <h1>Schedulers</h1>
+  <p></p>
+`, () => {
+  return {
+    bindings: {
+      p: {
+        [$child]: FastUpdates({}, { scheduler: animationFrame() })
+      }
+    }
+  }
+});
+
+const FastUpdates = component(`
+  Fast counter: <span></span>
+`, () => {
+  const counter = new Signal.State(0);
+
+  function updateCounter() {
+    counter.set(counter.get() + 1);
+  }
+
+  let interval;
+  return {
+    bindings: {
+      p: {
+        [$textContent]: counter,
+      }
+    },
+    mounted() {
+      // Update the counter very frequently
+      setInterval(updateCounter, 2);
+    },
+    cleanup() {
+      clearInterval(interval);
+    }
+  }
+});
+```
 
 ### Lazy utility component
 
 Component logic can be eagerly imported either statically or dynamically, as shown in _Nesting components_ above. The utility component `Lazy` can be used for lazy loading.
 
 ```JavaScript
-// Container.component.js
-
+import { component } from 'klaarover';
 import { Lazy, delay, trigger, idleTime } from 'klaarover/lib/components';
 
 export default component(`
