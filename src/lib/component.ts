@@ -2,6 +2,7 @@ import { bind } from './bind';
 import { Scheduler } from './schedulers/scheduler';
 import { microtask } from './schedulers/microtask.scheduler';
 import { AnySignal } from './signals';
+import { ComponentEffect, createEffect } from './effect';
 
 export type Component<Props extends {}> = (
   props: keyof Props extends never ? void | Props : Props,
@@ -13,6 +14,7 @@ type ComponentInit<Props extends {}> = (
   utils: {
     lifecycle: AbortSignal;
     fragment: DocumentFragment;
+    $effect: ComponentEffect;
   }
 ) => void | {
   bindings?: ComponentBindings;
@@ -74,10 +76,13 @@ export function component<Props extends {} = {}>(
     const childNodes = new Set<Node>();
     const childComponents = new Set<ComponentInstance>();
 
+    const $effect = createEffect(lifecycle, scheduler);
+
     const { bindings, mounted, cleanup } =
       logic(props as Props, {
         lifecycle,
         fragment,
+        $effect,
       }) ?? {};
 
     if (bindings) {

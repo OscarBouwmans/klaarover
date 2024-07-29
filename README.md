@@ -295,6 +295,47 @@ function toLocaleString(date) {
 }
 ```
 
+### Effects
+
+Many side effects can be handled using `mounted`, `cleanup`, and the `lifecycle` AbortSignal. But sometimes you may want to react to Signal changes. Within a component’s initialisation function, the `$effect` function is available for this. Effects callbacks are run by the component’s scheduler, until the component is destroyed.
+
+```JavaScript
+// Effects.component.js
+
+import { component, $state, $computed, $effect } from 'klaarover';
+
+export default component(`
+  <h1>Effects</h1>
+  <p></p>
+  <button>Increment</button>
+`, () => {
+  const counter = $state(0);
+
+  $effect(() => {
+    console.log('Counter has changed to:', counter.get());
+  });
+
+  $effect(() => {
+    let time = 0;
+    let interval = setInterval(() => {
+      console.log(`The value of Counter has remained the same for ${++time} seconds.`);
+    }, 1000);   
+    return () => clearInterval(interval);
+  });
+
+  return {
+    bindings: {
+      p: {
+        [$textContent]: $computed(() => `Counter value: ${counter.get()}`)
+      },
+      button: {
+        onclick: () => counter.set(counter.get() + 1)
+      }
+    }
+  }
+});
+```
+
 ### Schedulers
 
 Components are initialized synchronously. After that, schedulers can be used to defer DOM updates caused by Signal updates. Available schedulers are:
