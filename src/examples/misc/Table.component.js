@@ -1,14 +1,5 @@
-import { Signal } from 'signal-polyfill';
 import { $children, $textContent, component } from '../..';
 import { idleCallback } from '../lib/schedulers/idle-callback.scheduler';
-
-// interface Person {
-//   name: {
-//     first: string;
-//     last: string;
-//   };
-//   favouriteColour: string;
-// }
 
 export default component(
   `
@@ -26,9 +17,9 @@ export default component(
     <button>Add person</button>
   `,
   () => {
-    const people = new Signal.State([]);
+    const people = $state([]);
 
-    const rows = new Signal.Computed(() => {
+    const rows = $computed(() => {
       return people
         .get()
         .map((person, index) =>
@@ -37,7 +28,7 @@ export default component(
     });
 
     function addPerson() {
-      const person: Person = {
+      const person = {
         name: { first: 'Peter', last: 'Pan' },
         favouriteColour: 'green',
       };

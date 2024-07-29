@@ -1,7 +1,7 @@
-import { Signal } from 'signal-polyfill';
 import { bind } from './bind';
 import { Scheduler } from './schedulers/scheduler';
 import { microtask } from './schedulers/microtask.scheduler';
+import { AnySignal } from './signals';
 
 export type Component<Props extends {}> = (
   props: keyof Props extends never ? void | Props : Props,
@@ -23,7 +23,7 @@ type ComponentInit<Props extends {}> = (
 type ComponentMounted = (parent: Node) => void;
 type ComponentCleanup = () => void;
 
-export type Binding<T> = T | Signal.State<T> | Signal.Computed<T> | Promise<T>;
+export type Binding<T> = T | AnySignal<T> | Promise<T>;
 
 export const $textContent = Symbol('textContent');
 export const $child = Symbol('child');

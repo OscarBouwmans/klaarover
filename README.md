@@ -55,7 +55,7 @@ Place the following script in your HTML `head` before any other script tags.
 
 Everybody is doing boring counter examples for signals, so here goes.
 
-Use the `$textContent` binding key to render static or dynamic text content within an element.
+Setup the `index.html` to import and render the `App` component.
 
 ```HTML
 <!-- index.html -->
@@ -76,10 +76,11 @@ Use the `$textContent` binding key to render static or dynamic text content with
 </html>
 ```
 
+`App.component.js` contains the component template and logic.
+
 ```JavaScript
 /* App.component.js */
-import { component, $textContent } from 'klaarover';
-import { Signal } from 'signal-polyfill';
+import { component, $computed, $state, $textContent } from 'klaarover';
 
 export default component(`
   <main>
@@ -89,10 +90,8 @@ export default component(`
   </main>
 `, (props) => {
   // This runs when the component is initialized
-  const counter = new Signal.state(0);
-  const counterText = new Signal.computed(() => {
-    return `Count: ${counter.get()}`;
-  });
+  const counter = $state(0);
+  const counterText = $computed(() => `Count: ${counter.get()}`);
 
   // Fill in the content of the template using bindings.
   return {
@@ -111,10 +110,6 @@ export default component(`
         // Binding to events:
         onclick: () => counter.set(counter.get() + 1)
       }
-    },
-    cleanup() {
-      // Optional function to clear timeouts etc.
-      // This runs when the component is destroyed.
     }
   }
 });
@@ -212,8 +207,7 @@ Use Signals, in combination with the `$child` binding key to render children con
 ```JavaScript
 // Conditionals.component.js
 
-import { component, $child } from 'klaarover';
-import { Signal } from 'signal-polyfill';
+import { component, $child, $computed, $state } from 'klaarover';
 import Secrets from './Secrets.component';
 
 export default component(`
@@ -222,9 +216,9 @@ export default component(`
   <button id="reveal">Reveal secrets</button>
   <button id="hide">Hide secrets</button>
 `, () => {
-  const revealed = new Signal.State(false);
+  const revealed = $state(false);
 
-  const toggledSecrets = new Signal.computed(() => {
+  const toggledSecrets = $computed(() => {
     if (releaved.get()) {
       return Secrets();
     }
@@ -253,7 +247,6 @@ export default component(`
 // Lifecycle.component.js
 
 import { component, $textContent } from 'klaarover';
-import { Signal } from 'signal-polyfill';
 
 export default component(`
   <h1>Lifecycle</h1>
@@ -262,8 +255,8 @@ export default component(`
 `, (props, { lifecycle }) => {
   console.log('Component instance initialization.');
 
-  const initDate = new Signal.State(new Date());
-  const mountedDate = new Signal.State(null);
+  const initDate = $state(new Date());
+  const mountedDate = $state(null);
 
   document.addEventListener('keydown', (event) => {
     // Act upon 'global' event
@@ -294,11 +287,11 @@ export default component(`
 });
 
 function toIsoString(date) {
-  return new Signal.Computed(() => date.get().toISOString());
+  return $computed(() => date.get().toISOString());
 }
 
 function toLocaleString(date) {
-  return new Signal.Computed(() => date.get().toLocaleString());
+  return $computed(() => date.get().toLocaleString());
 }
 ```
 
@@ -313,7 +306,7 @@ Components are initialized synchronously. After that, schedulers can be used to 
 The following example shows a component that increments a counter every 2 milliseconds. The component is instantiated using the `animationFrame` scheduler, so that the DOM is updated at the display's frame rate. The number will still increment ~500 per second, regardless of frame rate.
 
 ```JavaScript
-import { component, $child, $textContent } from 'klaarover';
+import { component, $child, $textContent, $state } from 'klaarover';
 import { animationFrame } from 'klaarover/lib/schedulers';
 
 export default component(`
@@ -332,7 +325,7 @@ export default component(`
 const FastUpdates = component(`
   Fast counter: <span></span>
 `, () => {
-  const counter = new Signal.State(0);
+  const counter = $state(0);
 
   function updateCounter() {
     counter.set(counter.get() + 1);
@@ -370,7 +363,7 @@ export default component(`
   <button>Trigger</button>
   <div class="idle"></div>
 `, () => {
-  const waitForMe = Promise.withResolvers();
+  const manualTrigger = Promise.withResolvers();
 
   return {
     bindings: {
@@ -381,11 +374,11 @@ export default component(`
       }),
       '.triggered': Lazy({
         loader: import('./Child.component.js').then(m => m.default()),
-        strategy: trigger(waitForMe.promise),
+        strategy: trigger(manualTrigger.promise),
         placeholder: component('Press the button to show my contents.')(),
       }),
       button: {
-        onclick: () => waitForMe.resolve(),
+        onclick: () => manualTrigger.resolve(),
       },
       '.idle': Lazy({
         loader: import('./Child.component.js').then(m => m.default()),

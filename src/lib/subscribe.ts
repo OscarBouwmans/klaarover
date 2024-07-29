@@ -1,6 +1,7 @@
 import { Signal } from 'signal-polyfill';
 import { Binding } from './component';
 import { Scheduler } from './schedulers/scheduler';
+import { $computed, AnySignal } from './signals';
 
 export function subscribe<T>(
   source: Binding<T>,
@@ -19,7 +20,7 @@ export function subscribe<T>(
   }
 
   if (isSignal(source)) {
-    const reader = new Signal.Computed(() => source.get());
+    const reader = $computed(() => source.get());
 
     let previousValue: T;
     let isPending = false;
@@ -64,6 +65,6 @@ function isPromise<T>(source: Binding<T>): source is Promise<T> {
 
 function isSignal<T>(
   source: Binding<T>
-): source is Signal.State<T> | Signal.Computed<T> {
+): source is AnySignal<T> {
   return source instanceof Signal.State || source instanceof Signal.Computed;
 }

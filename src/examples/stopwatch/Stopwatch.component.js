@@ -1,11 +1,10 @@
-import { Signal } from 'signal-polyfill';
-import { $child, component } from '../..';
+import { $child, $state, component } from '../..';
 import { timeFormat } from './time-format';
 import { RunningTime } from './RunningTime.component';
 
 export const Stopwatch = component(stopwatch, () => {
-  const runningSince = new Signal.State(null);
-  const stoppedTime = new Signal.State(0);
+  const runningSince = $state(null);
+  const stoppedTime = $state(0);
 
   function start() {
     const t = Date.now() - stoppedTime.get() ?? 0;
@@ -25,7 +24,7 @@ export const Stopwatch = component(stopwatch, () => {
     stoppedTime.set(0);
   }
 
-  const displayTime = new Signal.Computed(() => {
+  const displayTime = $computed(() => {
     if (runningSince.get()) {
       return RunningTime({ runningSince });
     }
@@ -34,7 +33,7 @@ export const Stopwatch = component(stopwatch, () => {
     return staticTime();
   });
 
-  const isRunning = new Signal.Computed(() => {
+  const isRunning = $computed(() => {
     return runningSince.get() !== null;
   });
 
@@ -62,5 +61,5 @@ export const Stopwatch = component(stopwatch, () => {
  * Tiny helper to invert a boolean signal
  */
 function invert(source) {
-  return new Signal.Computed(() => !source.get());
+  return $computed(() => !source.get());
 }

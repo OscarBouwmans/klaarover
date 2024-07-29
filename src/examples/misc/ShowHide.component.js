@@ -1,5 +1,4 @@
-import { Signal } from 'signal-polyfill';
-import { $child, $textContent, ComponentInstance, component } from '../..';
+import { $child, $computed, $state, $textContent, component } from '../..';
 
 export default component(
   `
@@ -9,9 +8,9 @@ export default component(
     </article>
   `,
   (props) => {
-    const child = new Signal.State(null);
+    const child = $state(null);
 
-    const buttonText = new Signal.Computed(() => {
+    const buttonText = $computed(() => {
       return child.get() ? 'Hide' : 'Show';
     });
 

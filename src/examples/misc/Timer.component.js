@@ -1,4 +1,3 @@
-import { Signal } from 'signal-polyfill';
 import { $textContent, component } from '../..';
 
 export default component(
@@ -9,16 +8,16 @@ export default component(
       minimumIntegerDigits: 2,
     });
 
-    const timer = new Signal.State(0);
-    const minutes = new Signal.Computed(() => {
+    const timer = $state(0);
+    const minutes = $computed(() => {
       const m = Math.floor(timer.get() / 60) % 60;
       return formatter.format(m);
     });
-    const seconds = new Signal.Computed(() => {
+    const seconds = $computed(() => {
       const s = Math.floor(timer.get()) % 60;
       return formatter.format(s);
     });
-    const hundreds = new Signal.Computed(() => {
+    const hundreds = $computed(() => {
       const d = Math.floor(timer.get() * 100) % 100;
       return formatter.format(d);
     });

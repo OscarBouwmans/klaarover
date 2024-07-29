@@ -1,11 +1,10 @@
-import { Signal } from 'signal-polyfill';
 import { $textContent, component } from '../..';
 import { timeFormat } from './time-format';
 
 export const RunningTime = component(
   'Time: <span></span>',
   ({ runningSince }) => {
-    const formattedTime = new Signal.State('');
+    const formattedTime = $state('');
 
     let nextFrame;
     const loop = () => {

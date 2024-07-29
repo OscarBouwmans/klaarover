@@ -6,6 +6,7 @@ export {
   isComponentInstance,
 } from './lib/component';
 export { render } from './lib/render';
+export { $state, $computed } from './lib/signals';
 
 export type {
   Binding,
@@ -13,3 +14,4 @@ export type {
   ComponentInstance,
   ComponentInstanceOptions,
 } from './lib/component';
+export type { AnySignal } from './lib/signals';

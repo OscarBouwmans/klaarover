@@ -1,5 +1,4 @@
-import { Signal } from 'signal-polyfill';
-import { $child, component } from '../..';
+import { $child, $state, component } from '../..';
 import CounterDisplay from './CounterDisplay.component';
 
 export default component(
@@ -13,7 +12,7 @@ export default component(
     </article>
   `,
   () => {
-    const counter = new Signal.State(0);
+    const counter = $state(0);
 
     return {
       bindings: {

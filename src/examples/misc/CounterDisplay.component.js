@@ -1,5 +1,4 @@
-import { Signal } from 'signal-polyfill';
-import { $textContent, component } from '../..';
+import { $computed, $textContent, component } from '../..';
 
 export default component(
   `
@@ -8,10 +7,10 @@ export default component(
     <span class="doubled"></span>
   `,
   ({ counter }) => {
-    const counterText = new Signal.Computed(
+    const counterText = $computed(
       () => `Current value: ${counter.get()}`
     );
-    const doubledText = new Signal.Computed(
+    const doubledText = $computed(
       () => `Doubled value: ${counter.get() * 2}`
     );
 
