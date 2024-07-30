@@ -413,12 +413,16 @@ export default component(`
   return {
     bindings: {
       '.delayed': Lazy({
-        loader: import('./Child.component.js').then(m => m.default()),
+        loader() {
+          return import('./Child.component.js').then(m => m.default());
+        },
         strategy: delay(5000),
         placeholder: component('Wait for it…')(),
       }),
       '.triggered': Lazy({
-        loader: import('./Child.component.js').then(m => m.default()),
+        loader() {
+          return import('./Child.component.js').then(m => m.default());
+        },
         strategy: trigger(manualTrigger.promise),
         placeholder: component('Press the button to show my contents.')(),
       }),
@@ -426,7 +430,9 @@ export default component(`
         onclick: () => manualTrigger.resolve(),
       },
       '.idle': Lazy({
-        loader: import('./Child.component.js').then(m => m.default()),
+        loader() {
+          return import('./Child.component.js').then(m => m.default());
+        },
         strategy: idleTime({ timeout: 3000 }),
       })
     }
