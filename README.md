@@ -1,6 +1,6 @@
 # Klaarover
 
-Signal-based reactive JavaScript UI framework that should not be used.
+Signal-based reactive JavaScript UI framework that should __not__ be used.
 
 ## Playground
 
@@ -160,7 +160,7 @@ Props can be passed to components when initializing them. Props are an object, a
 import { component, $children } from 'klaarover';
 import User from './User.component';
 
-export default UserList = component(`
+export default component(`
   <table>
     <thead>
       <tr>
